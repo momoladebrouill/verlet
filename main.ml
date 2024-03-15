@@ -83,7 +83,7 @@ let forces prev pos mass mouse temperature =
       grav;
       -0.01 *$ v;
       (0.0,-.temperature/.2.0);
-      (pos -$ mouse) /$ (dist pos mouse)**1.5
+      (pos -$ mouse) /$ (dist pos mouse)**1.5;
     ]
 
 let update {points;time} =
@@ -109,10 +109,10 @@ let rec loop args =
     draw_rectangle 0 0 width height (fade black 0.5);
     draw (args);
     end_drawing ();
-    if is_mouse_button_down MouseButton.Left && args.time mod 3 = 0 then
+    if is_mouse_button_down MouseButton.Left then
       let x = float_of_int (width/2) +. Random.float 100.0 -. 50.0 in
       let y = float_of_int (height/2) +. Random.float 100.0 -. 50.0 in
-      loop {
+      loop (update {
         points = {
             pos = (x,y); 
             prevpos = (x,y);
@@ -121,7 +121,7 @@ let rec loop args =
             temperature = 0.0
          }::args.points; 
         time = args.time+1
-        }
+        })
     else
       loop (let rec aux n args = if n = 0 then args else aux (n-1) (update args) in aux rk args)
   end
